@@ -1,0 +1,48 @@
+今天完成項目
+
+前端：為 js/vue 檔案加入路徑標頭，並將 vue 改為 <!-- path --> 格式
+前端：Vite build 設定切換（單檔/分拆方案保留）並加註解
+前端：新增專案專屬樣式入口（@project/style.sass），避免跨專案樣式混入
+前端：修正 project modules/layout 的載入方式，改為只引入當前專案（@project）
+前端：調整登入 UI z-index 與 overlay 透過 Teleport 進 body
+後端：新增 db.php 連線、Auth 改為 users 表驗證、登出後 token 失效、建立 user_tokens 表
+尚未完成
+
+平台能力註冊（authApi 需透過 container.register/resolve）
+authStore 作為唯一登入狀態來源，Project 只能呼叫 authStore
+world rebuild（登入/登出觸發的 routes/modules/stores 重建）
+platformConfig 依登入狀態切換 public/auth world
+
+
+---
+
+[明日建議]
+
+6. 明日確定事項：將「世界 B」也寫入登入功能，用於驗證世界邊界隔離。
+
+---
+
+今天完成項目（2026-01-28）
+
+後端：建立 project-b 的 API 與控制器（employee/task/vote/notification），補上路由
+後端：建立並灌入 project-b 行為資料表（含 seed.sql）
+後端：員工表新增 role、user_id 並回填；投票表新增 anonymous
+後端：Auth 回傳 role（由 project_b_employees 取得）以啟用 manager 權限
+前端：API 切換為 real 並串接通知 API
+前端：投票詳情與員工編輯 modal Teleport 到 body 並置中
+
+[明日建議]
+
+1. 補齊 employees 與 users 的一致性校驗（JOIN 檢查缺漏/不一致）
+2. 投票/任務 API 回傳 username 需求評估與必要欄位整理
+3. 補上通知 API 的 member_id 來源（由 auth.user.user_id/ member_id 導入）
+4. 加入簡單 API error 提示與 loading 狀態（employee/task/vote/notification）
+
+---
+
+[明日建議]（2026-02-02）
+
+1. project-a 建立最小示範世界（welcome/about），驗證 module discovery → register → routing
+2. 完成 boot Phase A/D/F 的最小實作定義（邊界檢查 / init / reset）
+3. 補上 project-a 的 layout 入口與驗證切換不汙染 project-b
+4. 釐清 project.config.js 的 modules 角色（保留為 fallback 或改為單一權威），避免語意混亂

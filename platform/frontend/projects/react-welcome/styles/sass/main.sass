@@ -1,0 +1,195 @@
+$bg: #f4efe6
+$ink: #182126
+$accent: #b54d29
+$accent-soft: #f0c7a5
+$panel: rgba(255, 252, 246, 0.88)
+$line: rgba(24, 33, 38, 0.12)
+
+:root
+  color: $ink
+  background: radial-gradient(circle at top left, rgba(181, 77, 41, 0.18), transparent 35%), linear-gradient(180deg, #f8f2e8 0%, #efe6d6 100%)
+  font-family: "Avenir Next", "Noto Sans TC", sans-serif
+
+*
+  box-sizing: border-box
+
+body
+  margin: 0
+  min-height: 100vh
+  background: transparent
+
+button
+  font: inherit
+
+#app
+  min-height: 100vh
+
+.react-shell
+  display: grid
+  grid-template-columns: 220px 1fr
+  min-height: 100vh
+
+.react-shell__rail
+  display: flex
+  flex-direction: column
+  gap: 12px
+  padding: 32px 20px
+  border-right: 1px solid $line
+  background: rgba(24, 33, 38, 0.92)
+
+  button
+    border: 0
+    border-radius: 14px
+    padding: 12px 14px
+    color: #f7f1e8
+    background: rgba(255, 255, 255, 0.08)
+    text-align: left
+    cursor: pointer
+
+  button.is-active
+    background: $accent
+
+.react-shell__brand
+  margin: 0 0 16px
+  color: #f0c7a5
+  font-size: 0.78rem
+  letter-spacing: 0.18em
+  text-transform: uppercase
+
+.react-shell__main
+  padding: 32px
+
+.react-page
+  display: flex
+  flex-direction: column
+  gap: 24px
+
+.react-page__header
+  display: flex
+  justify-content: space-between
+  gap: 20px
+  align-items: flex-start
+
+  h1
+    margin: 8px 0 12px
+    font-size: clamp(2rem, 4vw, 3.25rem)
+    line-height: 1
+
+.react-eyebrow
+  margin: 0
+  color: $accent
+  font-size: 0.78rem
+  font-weight: 700
+  letter-spacing: 0.16em
+  text-transform: uppercase
+
+.react-copy
+  margin: 0
+  max-width: 58ch
+  color: rgba(24, 33, 38, 0.72)
+  line-height: 1.6
+
+.react-actions
+  display: flex
+  flex-wrap: wrap
+  gap: 12px
+
+  button
+    border: 0
+    border-radius: 999px
+    padding: 12px 18px
+    background: $accent
+    color: #fff8f0
+    cursor: pointer
+
+.react-actions__ghost
+  background: rgba(24, 33, 38, 0.08) !important
+  color: $ink !important
+
+.react-signal-strip
+  display: flex
+  flex-wrap: wrap
+  gap: 12px
+
+  span
+    padding: 10px 14px
+    border-radius: 999px
+    background: rgba(255, 255, 255, 0.55)
+    border: 1px solid rgba(24, 33, 38, 0.08)
+
+.react-panel-grid
+  display: grid
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
+  gap: 20px
+
+.react-card
+  padding: 24px
+  border: 1px solid $line
+  border-radius: 24px
+  background: $panel
+  backdrop-filter: blur(10px)
+  box-shadow: 0 18px 50px rgba(24, 33, 38, 0.08)
+
+  h2
+    margin: 8px 0 12px
+
+.react-card--wide
+  grid-column: 1 / -1
+
+.react-status-list
+  display: grid
+  gap: 12px
+  margin: 0 0 18px
+
+  div
+    padding: 12px 14px
+    border-radius: 16px
+    background: rgba(24, 33, 38, 0.04)
+
+  dt
+    margin-bottom: 6px
+    font-size: 0.82rem
+    color: rgba(24, 33, 38, 0.64)
+
+  dd
+    margin: 0
+    font-size: 1rem
+    font-weight: 600
+
+.react-diagnostics
+  display: grid
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))
+  gap: 20px
+
+.react-event-list
+  display: grid
+  gap: 10px
+  padding: 0
+  margin: 0
+  list-style: none
+
+  li
+    display: flex
+    justify-content: space-between
+    gap: 12px
+    padding: 10px 12px
+    border-radius: 14px
+    background: rgba(24, 33, 38, 0.04)
+
+  span
+    color: rgba(24, 33, 38, 0.64)
+    font-size: 0.88rem
+
+@media (max-width: 880px)
+  .react-shell
+    grid-template-columns: 1fr
+
+  .react-shell__rail
+    border-right: 0
+    border-bottom: 1px solid $line
+
+  .react-shell__main
+    padding: 20px
+
+  .react-page__header
+    flex-direction: column

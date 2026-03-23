@@ -1,0 +1,218 @@
+﻿# new_engineering Index
+
+本目錄為「工程規範生成前」之觀察與實驗空間。
+
+本層級 **不具工程治理裁決權**，
+亦不作為 engineering/ 之替代。
+
+---
+
+## 使用裁決原則（重要）
+
+- 未被本 index.md 明確列為「可使用」的內容，
+  一律視為：
+  - 僅供觀察
+  - 不可引用
+  - 不可作為工程依據
+
+- 本目錄下之任何文件：
+  - 即使存在
+  - 即使內容完整
+  - **未經允許，不代表可被使用**
+
+---
+
+## 當前可使用項目（白名單）
+
+> 僅列於此處之項目，方可被引用或作為工程依據。
+
+- notes/
+  - 僅限於「閱讀與歸納」
+  - 不得直接升級為規範
+- templates/DAILY_LOG_TEMPLATE.md
+  - Daily Evolution 輸出模板
+- templates/FRICTION_ITEM_TEMPLATE.md
+  - Friction item 記錄模板
+- templates/PROMOTION_PROPOSAL_TEMPLATE.md
+  - 升級請求模板（提案用）
+- evolution/DAILY_EVOLUTION.md
+  - Daily Evolution Task 規格（任務流程與輸出要求）
+- evolution/daily_log/
+  - Daily Evolution 輸出位置（log 記錄）
+
+---
+
+## 明確禁止事項
+
+- 將 new_engineering 內容視為既定工程規範
+- 跳過 index.md 直接引用任一檔案
+- 推論未列入白名單之內容具有工程效力
+
+---
+
+## Engineering Index 參考節錄（條目 6～8）
+
+### Rule 6：World Modification Guard
+
+任何對 `_VibeCore/world/` 的修改行為：
+
+- 必須先符合 `_VibeCore/world/08_CHANGE_PROTOCOL.md`
+- 僅能提出建議，不得自行修改
+- 必須明確指出修改類型：
+  - 澄清（Clarification）
+  - 精煉（Refinement）
+  - 行為變更（Behavior Change）
+
+### Rule 7：Git Discipline（概要）
+
+Git 僅用於保存進度與歷史脈絡，
+非發版、非審核流程。
+
+具體觸發與流程：
+→ 請參考 `_VibeCore/engineering/GIT_AUTOMATION.md`
+
+未被明確觸發前：
+
+- 不得自行 commit
+- 不得自行 push
+
+### Rule 8：Vue Output Format（唯一合法形式）
+
+工程產出任何 `.vue` 檔案時，**必須符合以下格式規範**：
+
+- `<script>` **必須** 使用 `<script setup>`
+- `<template>` **必須** 使用 `pug`（`<template lang="pug">`）
+- `<style>` **必須** 使用 `sass`（縮排語法，非 scss）
+
+#### Scoped 使用規則
+
+- 預設 **不得** 使用 `scoped`
+- 若必須使用：
+  - 必須在工程紀錄中說明原因
+  - 理由需與樣式隔離或副作用風險直接相關
+- 未說明即使用 `scoped`，視為不合法工程產出
+
+---
+
+## 語意聲明
+
+本 index.md 僅負責：
+「使用權限裁決」
+
+不負責：
+- 世界治理
+- 工程裁決
+- 架構合理性判斷
+
+---
+
+## notes/ 列冊
+
+- [Structure] `notes/001_projects_structure.md` — Observation Only
+- [Module] `notes/002_modules_glob.md` — Observation Only
+- [Module] `notes/003_modules_index_imports.md` — Observation Only
+- [Lifecycle] `notes/004_boot_paths.md` — Observation Only
+- [Import] `notes/005_engineering_conventions_import.md` — Observation Only
+
+---
+
+## Templates
+
+- Title: Convention Template | Path: templates/CONVENTION_TEMPLATE.md | Type: template | Status: - | Scope: platform | Evidence: notes/001_projects_structure.md, notes/002_modules_glob.md, notes/003_modules_index_imports.md, notes/004_boot_paths.md
+- Title: Daily Log Template | Path: templates/DAILY_LOG_TEMPLATE.md | Type: template | Status: - | Scope: platform | Evidence: notes/001_projects_structure.md, notes/002_modules_glob.md, notes/003_modules_index_imports.md, notes/004_boot_paths.md
+- Title: Friction Item Template | Path: templates/FRICTION_ITEM_TEMPLATE.md | Type: template | Status: - | Scope: platform | Evidence: evolution/DAILY_EVOLUTION.md, templates/DAILY_LOG_TEMPLATE.md
+- Title: Index Schema | Path: templates/INDEX_SCHEMA.md | Type: template | Status: - | Scope: platform | Evidence: notes/001_projects_structure.md, notes/002_modules_glob.md, notes/003_modules_index_imports.md, notes/004_boot_paths.md
+- Title: Promotion Template | Path: templates/PROMOTION_TEMPLATE.md | Type: template | Status: - | Scope: platform | Evidence: notes/001_projects_structure.md, notes/002_modules_glob.md, notes/003_modules_index_imports.md, notes/004_boot_paths.md
+- Title: Promotion Proposal Template | Path: templates/PROMOTION_PROPOSAL_TEMPLATE.md | Type: template | Status: - | Scope: platform | Evidence: evolution/DAILY_EVOLUTION.md, templates/DAILY_LOG_TEMPLATE.md
+
+---
+
+## Blueprints
+
+- Title: V2 平台 SSR-native 設計藍圖（World-first） | Path: blueprints/V2平台SSR-native設計藍圖.md | Type: blueprint | Status: draft | Scope: platform | Evidence: boundaries/B003_world_first_integration.md, boundaries/B004_runtime_scope_boundary.md, boundaries/B005_guard_auth_runtime_boundary.md, conventions/C007_pipeline_staging_rules.md, conventions/C008_ssr_payload_schema.md, conventions/C009_runtime_provider_naming_and_placement.md
+
+---
+
+## Conventions
+
+- Title: Projects 子目錄結構邊界 | Path: conventions/C001_projects_structure.md | Type: convention | Status: candidate | Scope: platform | Evidence: notes/001_projects_structure.md
+- Title: modules/index.js 掃描邊界 | Path: conventions/C002_modules_glob.md | Type: convention | Status: candidate | Scope: platform | Evidence: notes/002_modules_glob.md
+- Title: @project/modules/index.js 入口引用邊界 | Path: conventions/C003_modules_index_imports.md | Type: convention | Status: candidate | Scope: platform | Evidence: notes/003_modules_index_imports.md
+- Title: Engineering Conventions Import | Path: conventions/C004_engineering_conventions_import.md | Type: convention | Status: candidate | Scope: platform | Evidence: notes/005_engineering_conventions_import.md
+- Title: AI Report Output Location | Path: conventions/C005_ai_report_output_location.md | Type: convention | Status: candidate | Scope: platform | Evidence: -
+- Title: Function Comment Requirement (Traditional Chinese) | Path: conventions/C006_function_comment_traditional_chinese.md | Type: convention | Status: candidate | Scope: platform | Evidence: -
+- Title: Pipeline Staging Rules | Path: conventions/C007_pipeline_staging_rules.md | Type: convention | Status: candidate | Scope: platform | Evidence: blueprints/V2平台SSR-native設計藍圖.md
+- Title: SSR Payload Schema | Path: conventions/C008_ssr_payload_schema.md | Type: convention | Status: candidate | Scope: platform | Evidence: blueprints/V2平台SSR-native設計藍圖.md
+- Title: Runtime Provider Naming and Placement | Path: conventions/C009_runtime_provider_naming_and_placement.md | Type: convention | Status: candidate | Scope: platform | Evidence: blueprints/V2平台SSR-native設計藍圖.md
+- Title: Project API Boundary Non-Pollution | Path: conventions/AA-WC-project-api-boundary-non-pollution.md | Type: convention | Status: candidate | Scope: platform | Evidence: evolution/daily_log/2026-03-02.md
+- Title: Module Data Ownership | Path: conventions/AB-WC-module-data-ownership.md | Type: convention | Status: candidate | Scope: platform | Evidence: evolution/daily_log/2026-03-02.md
+- Title: Project Auth Single Source Pattern | Path: conventions/AC-WC-project-auth-single-source-pattern.md | Type: convention | Status: candidate | Scope: platform | Evidence: evolution/daily_log/2026-03-02.md
+- Title: Module Registry Boot Pipeline | Path: conventions/AD-WC-module-registry-boot-pipeline.md | Type: convention | Status: candidate | Scope: platform | Evidence: projects/project-b/modules/index.js, src/app/boot/boot.js
+- Title: Layout And Route Resilience | Path: conventions/AE-WC-layout-route-resilience.md | Type: convention | Status: candidate | Scope: platform | Evidence: evolution/daily_log/2026-03-03.md
+- Title: Project Services Hard Boundary | Path: conventions/AF-WC-project-services-hard-boundary.md | Type: convention | Status: candidate | Scope: platform | Evidence: evolution/daily_log/2026-03-03.md
+- Title: Store And API Boundary | Path: conventions/AG-WC-store-and-api-boundary.md | Type: convention | Status: candidate | Scope: platform | Evidence: evolution/daily_log/2026-03-03.md
+
+---
+
+## Boundaries
+
+- Title: Platform Project Boundary | Path: boundaries/B001_platform_project_boundary.md | Type: boundary | Status: active | Scope: platform | Evidence: conventions/C001_projects_structure.md
+- Title: Module Discovery Boundary | Path: boundaries/B002_module_discovery_boundary.md | Type: boundary | Status: active | Scope: platform | Evidence: conventions/C002_modules_glob.md, conventions/C003_modules_index_imports.md
+- Title: World-First Integration | Path: boundaries/B003_world_first_integration.md | Type: boundary | Status: active | Scope: platform | Evidence: -
+- Title: Runtime Scope Boundary | Path: boundaries/B004_runtime_scope_boundary.md | Type: boundary | Status: candidate | Scope: platform | Evidence: blueprints/V2平台SSR-native設計藍圖.md
+- Title: Guard/Auth Runtime Boundary | Path: boundaries/B005_guard_auth_runtime_boundary.md | Type: boundary | Status: candidate | Scope: platform | Evidence: blueprints/V2平台SSR-native設計藍圖.md
+
+---
+
+## Evolution Logs
+
+- Title: Daily Evolution Task Spec | Path: evolution/DAILY_EVOLUTION.md | Type: task-spec | Status: active | Scope: platform | Evidence: -
+- Title: Daily Evolution Log Output Directory | Path: evolution/daily_log/ | Type: output-dir | Status: active | Scope: platform | Evidence: evolution/DAILY_EVOLUTION.md
+
+- Title: Daily Evolution Log 2026-02-06 | Path: evolution/daily_log/2026-02-06.md | Type: note | Status: - | Scope: platform | Evidence: -
+- Title: Daily Evolution Log 2026-03-02 | Path: evolution/daily_log/2026-03-02.md | Type: note | Status: - | Scope: platform | Evidence: conventions/AA-WC-project-api-boundary-non-pollution.md
+- Title: Daily Evolution Log 2026-03-03 | Path: evolution/daily_log/2026-03-03.md | Type: note | Status: - | Scope: platform | Evidence: conventions/AE-WC-layout-route-resilience.md
+
+---
+
+## Promotion Proposals
+
+---
+
+## 新模組建立（Module Scaffolding）
+
+### 目的
+- 讓工程指令本身內建「建立新模組」的基礎認知。
+- 確保產出符合平台工具層與世界規範，不靠臨時口頭補充。
+
+### 標準命令（直接貼給 Codex）
+
+```md
+# 任務名稱：建立新模組 <module-name>
+# 目標專案：projects/<project-name>
+# 模組路徑：projects/<project-name>/modules/<module-name>
+
+請依目前世界規範與平台工具層建立新模組，並一次完成：
+1) 建立標準檔案：
+   - index.js
+   - routes.js
+   - pages/index.vue
+   - store.js（若需要）
+   - services/*（若需要）
+2) 路由規範：
+   - 單頁模組禁止 children
+   - route 必須顯式 component
+   - 保留 meta.access 與 meta.nav
+3) 工具引用規範：
+   - store 一律使用 `world.createStore(...)`
+   - 若範例與 `_VibeCore/engineering/MODULE_TEMPLATE_CONTRACT.md` 衝突，以 engineering 契約為準
+   - 禁止直接 import `@/app/*` 底層工具
+4) 世界對齊：
+   - 若要啟用模組，更新 `projects/<project-name>/project.config.js` 的 modules 清單
+5) 完成後：
+   - 顯示變更檔案清單
+   - 執行 `npm --prefix platform/frontend run build` 並回報結果
+```
+
+### 最小範例
+- `請建立新模組 announcement 到 projects/project-b，並依上述規範完成與驗證。`

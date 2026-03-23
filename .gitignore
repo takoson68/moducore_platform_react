@@ -1,0 +1,20 @@
+node_modules
+.DS_Store
+/dist
+/ai
+/ai_new
+
+# Git 備份與本機快取
+.git_source_backup_*/
+.vite/
+
+# 前端建置產物
+platform/frontend/dist/
+platform/frontend/projects/*/dist/
+
+# 後端 public 建置輸出
+platform/backend/public/assets/
+platform/backend/public/index.html
+
+# 本機記錄檔
+*.log
