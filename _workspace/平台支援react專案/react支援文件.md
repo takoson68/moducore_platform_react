@@ -1,14 +1,14 @@
-# Codex 任務：React 平台驗證專案第一階段修正版
+# Codex 任務：React 平台重建第一階段修正版
 
 ## 文件定位
-本文件是「React 驗證專案第一階段」的工作說明文件。
+本文件是「React 平台重建第一階段」的工作說明文件。
 
 它的用途是：
 
 - 說明這一階段的目標
 - 校正目前 repo 現況
 - 明確指出哪些是要保留的核心
-- 明確指出哪些內容只是目標，不是現況
+- 明確指出哪些內容屬於待移除的舊平台殘留
 
 本文件不是現況聲明。
 若本文件與實際程式碼不一致，應以實際程式碼為準，並視為工程發現。
@@ -17,7 +17,7 @@
 
 ## 一、現況校正
 
-目前這個 repo 並不是「只剩最小 React 驗證骨架」的狀態。
+目前這個 repo 並不是「只剩 React 平台骨架」的狀態。
 
 目前實際狀況是：
 
@@ -31,9 +31,9 @@
 
 因此，本階段任務應理解為：
 
-> 基於現有平台，整理出一份 React 驗證方向，
-> 並驗證平台核心邊界能否維持，
-> 而不是假定目前 repo 已經完成最小化。
+> 基於現有平台，將前端重建為 React-only 平台，
+> 並逐步移除 Vue 與既有舊專案殘留，
+> 而不是長期維持 Vue / React 共存。
 
 ---
 
@@ -71,7 +71,7 @@
 ## 三、核心判定校正
 
 本階段要保留的，不是「所有現有平台實作」，
-而是「可代表平台核心邊界的最小有效部分」。
+而是「可代表平台核心邊界、且能被 React-only 平台沿用的最小有效部分」。
 
 ### 1. 可以視為目前已存在的核心能力
 
@@ -83,48 +83,51 @@
 - visibility 判定先於註冊的概念
 - lifecycle phase 與 runtime ready 的最小概念
 
-### 2. 不應誤判為「框架中立核心」的部分
+### 2. 不應誤判為「應被保留」的部分
 
-以下內容雖存在，但目前不應直接稱為乾淨的 shared core：
+以下內容雖存在，但目前不應直接稱為乾淨的 shared core，
+也不應被長期保留在 React-only 平台中：
 
 - `platform/frontend/src/world.js`
   - 目前已直接耦合 api、auth、router 與 project 載入
 - `platform/frontend/src/core/`
   - 目前較像 façade 出口，不是完整核心層
 - 既有專案 layout / modules / styles
-  - 屬於 project 層或既有商業內容，不是 React 驗證核心
+  - 屬於 project 層或既有商業內容，不是 React 平台核心
+- `platform/frontend/projects/` 下的既有 Vue 專案
+  - 屬於待移除對象，不是要與 React 長期共存的正式結構
 
 ### 3. 本階段真正要驗證的核心邊界
 
-本階段應驗證的是：
+本階段應驗證與建立的是：
 
-- React 能否只作為 UI runtime adapter
-- container / boot / module registration 概念能否被沿用
-- world facade 是否可被整理為更清楚的 runtime 邊界
-- React 專屬邏輯能否不反向污染 shared boot 與 container 核心
+- React 能否成為平台唯一前端 runtime
+- container / boot / module registration 概念能否被 React-only 平台沿用
+- world facade 是否需要被 React 方向重整或替換
+- React 專屬邏輯能否在不污染核心邊界的前提下接管前端平台
 
 ---
 
 ## 四、任務目標（修正版）
 
 本任務不是從零建立新平台，
-也不是聲稱目前 repo 已經是最小 React 平台。
+也不是聲稱目前 repo 已經完成 React 化。
 
 本任務是：
 
 > 以現有平台為基底，
-> 建立第一階段 React 驗證方向，
-> 並以最小範圍確認平台核心邊界能否被保留。
+> 將前端平台改造為只支援 React 的平台，
+> 並逐步清除 Vue 與既有舊專案殘留。
 
 本階段目標如下：
 
 1. 保留可代表平台核心的最小骨架
-2. 避免把既有商業專案誤認為 React 驗證核心
-3. 建立 React 專用 boot 接入點
-4. 建立最小「歡迎頁面」驗證畫面
-5. 建立 1 到 2 個最小示範模組
-6. 驗證 container / boot / module runtime / signal / lifecycle 的最小可行性
-7. 確保 React 與平台核心邊界仍可分離
+2. 停止以 Vue / React 共存作為目標
+3. 讓前端平台只支援 React
+4. 規劃並逐步移除 `platform/frontend/projects/` 既有舊專案
+5. 建立最小「歡迎頁面」作為 React 平台入口
+6. 建立 1 到 2 個最小示範模組
+7. 驗證 container / boot / module runtime / signal / lifecycle 的最小可行性
 
 ---
 
@@ -140,6 +143,22 @@
 - visibility 先於註冊的原則
 - signal / route / lifecycle 的最小驗證能力
 
+### 1.1 平台方向聲明
+
+自本文件起，前端平台方向明確定義為：
+
+> `platform/frontend/` 最終只支援 React。
+
+因此以下方向不成立：
+
+- Vue / React 長期共存
+- 保留 Vue 作為正式替代 runtime
+- 持續維護既有 Vue project 與 React project 並列存在
+
+本階段允許暫時性相容措施，
+但其性質僅為遷移過渡，
+不得被視為最終架構。
+
 ### 2. 本階段禁止事項
 
 本階段禁止加入以下內容：
@@ -151,10 +170,13 @@
 - 舊專案資產搬運
 - React Hook 直接進入 container 核心
 - 為了 React 而改壞平台邊界
+- 為了相容舊 Vue 專案而保留長期雙軌架構
+- 將既有 `platform/frontend/projects/` 視為要永久共存的正式專案集合
 
 ### 3. React 接入規則
 
-React 只能作為 UI runtime / render adapter 存在。
+React 在本平台中不是附加 runtime，
+而是唯一合法前端 runtime。
 
 允許存在於：
 
@@ -169,11 +191,12 @@ React 只能作為 UI runtime / render adapter 存在。
 - world 治理層
 - shared boot 核心規則
 - module runtime 核心規則中直接耦合 React Hook
+- 任何「只為了讓 Vue 繼續共存」而保留的過渡殼層
 
 ### 4. 工程規章與 React 實作的優先關係
 
 本專案既有工程文件多數以 Vue 為中心撰寫。
-在 React 驗證任務中，必須將「結構規章」與「框架實作規則」分開理解。
+在 React-only 平台重建任務中，必須將「結構規章」與「框架實作規則」分開理解。
 
 #### 4.1 必須沿用既有工程規章的部分
 
@@ -232,7 +255,7 @@ React 只能作為 UI runtime / render adapter 存在。
 ## 六、歡迎頁面驗證範圍
 
 本階段不再稱 `hollow world`，
-改為建立最小「歡迎頁面」驗證流程。
+改為建立最小「歡迎頁面」作為 React-only 平台入口。
 
 歡迎頁面只負責驗證以下事項：
 
@@ -249,27 +272,30 @@ React 只能作為 UI runtime / render adapter 存在。
 
 ## 七、建議實作順序
 
-### Phase 1：先辨識真正要保留的核心
+### Phase 1：先辨識真正要保留的核心與待移除項
 
 - 盤點 `world.js`
 - 盤點 `boot.js`
 - 盤點 `container/`
 - 盤點 `projects/modulesRegistry.js`
 - 區分哪些是 shared 核心概念，哪些只是現有 Vue 專案實作
+- 明確標記 `platform/frontend/projects/` 中哪些舊專案屬於待移除
 
-### Phase 2：建立最小 React 驗證入口
+### Phase 2：建立 React-only 平台入口
 
-- 新增 React 專用 boot
+- 以 React 取代現有前端主入口
+- 建立 React 專用 boot
 - 建立最小 App
-- 將 runtime world 接入 React
+- 將 runtime world 或其替代物接入 React
 - 不修改世界治理層
 
-### Phase 3：建立歡迎頁面
+### Phase 3：建立歡迎頁面並替代舊前端入口
 
 - 建立最小 welcome route
 - 建立最小 welcome view
 - 不接商業 API
 - 不搬既有商業 layout
+- 不再以 Vue project 頁面作為正式入口
 
 ### Phase 4：建立最小示範模組
 
@@ -279,12 +305,12 @@ React 只能作為 UI runtime / render adapter 存在。
 - 驗證 mount / unmount
 - 驗證 signal 更新
 
-### Phase 5：整理結果文件
+### Phase 5：移除舊專案並整理結果文件
 
 輸出以下內容：
 
 - 保留核心清單
-- 非核心但現存內容清單
+- 待移除與已移除內容清單
 - React boot 與 shared boot 分工
 - 歡迎頁面驗證範圍
 - 本階段刻意不做的事項
@@ -295,7 +321,7 @@ React 只能作為 UI runtime / render adapter 存在。
 
 ### 1. 可啟動
 
-- React 驗證入口可正常執行
+- React-only 平台入口可正常執行
 - React 畫面可正常 render
 
 ### 2. 可驗證
@@ -313,14 +339,15 @@ React 只能作為 UI runtime / render adapter 存在。
 - React 不直接進入 container 核心
 - shared boot 未被 React 專屬實作污染
 - runtime world 與世界治理層語意未混淆
-- project 商業內容未被誤認為平台核心
+- Vue 不再作為正式前端 runtime
+- 既有 `platform/frontend/projects/` 專案被視為待移除，而非共存對象
 
 ### 4. 結果可閱讀
 
 請補一份簡短說明，至少包含：
 
 1. 保留了哪些平台核心
-2. 哪些是現有 repo 仍保留、但不屬於本階段核心的內容
+2. 哪些是待移除或已移除的舊前端內容
 3. shared boot 與 react boot 如何分工
 4. 歡迎頁面驗證範圍是什麼
 5. 本階段刻意不做哪些商業功能
@@ -331,7 +358,7 @@ React 只能作為 UI runtime / render adapter 存在。
 
 若遇到以下衝突：
 
-- React 接入方便
+- React-only 平台方向
 - 平台核心邊界可能被污染
 
 應優先遵守平台核心邊界。
@@ -340,6 +367,6 @@ React 只能作為 UI runtime / render adapter 存在。
 而是以下四件事是否成立：
 
 - 核心邊界守住
-- React 可以最小接入
+- 平台只支援 React
 - 歡迎頁面可以啟動
 - module runtime / signal / lifecycle 能被驗證

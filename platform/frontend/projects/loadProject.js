@@ -1,7 +1,7 @@
 //- projects/loadProject.js
 // 只負責「載入 project」，不負責任何世界規則
 export async function loadProjectConfig() {
-  const name = import.meta.env.VITE_PROJECT || 'project-a'
+  const name = import.meta.env.VITE_PROJECT || 'react-welcome'
 
   // 由 Vite 掃描 projects/*/project.config.js 作為候選集合
   const modules = import.meta.glob('./*/project.config.js')
@@ -20,4 +20,3 @@ export async function loadProjectConfig() {
   const mod = await loader()
   return mod.default ?? mod
 }
-

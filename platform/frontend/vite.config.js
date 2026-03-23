@@ -1,6 +1,5 @@
 //- vite.config.js
 import { defineConfig, loadEnv } from 'vite'
-import vue from '@vitejs/plugin-vue'
 import react from '@vitejs/plugin-react'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
@@ -8,14 +7,14 @@ import { cp, mkdir, readdir, rm } from 'node:fs/promises'
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const project = env.VITE_PROJECT || 'project-a'
+  const project = env.VITE_PROJECT || 'react-welcome'
   // 目前專案以前後端同源為主，暫不使用 VITE_API_TARGET 覆寫 proxy 目標。
   // 若未來改回前後端分離部署，再評估是否重新啟用 env 控制。
   const apiTarget = 'http://moducore_platform.test'
   const projectOutDir = path.join('projects', project, 'dist')
 
   return {
-    plugins: [vue(), react(), copyDistToBackend(project)],
+    plugins: [react(), copyDistToBackend(project)],
     // 方案 A：單一 JS（目前啟用）
     build: {
       outDir: projectOutDir,
