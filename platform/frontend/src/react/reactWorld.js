@@ -1,16 +1,16 @@
 import { registerStore } from '@/app/container/index.js'
 import { container } from '@/app/container/container.js'
 import { coreStoreFactories } from '@/app/stores/index.js'
+import { createStore } from '@/core'
 import { createSignalStore } from './stores/createSignalStore.js'
 import { createRouteStore } from './stores/createRouteStore.js'
-import { createLifecycleStore } from './stores/createLifecycleStore.js'
-import { createObservableStore } from './runtime/createObservableStore.js'
 import { reactBoot } from './reactBoot.js'
 
-function getInitialRoute() {
-  if (typeof window === 'undefined') return '/welcome'
+function getInitialRoute(projectConfig) {
+  const fallbackRoute = projectConfig?.defaultRoute || '/welcome'
+  if (typeof window === 'undefined') return fallbackRoute
   const raw = window.location.hash.replace(/^#/, '')
-  return raw || '/welcome'
+  return raw || fallbackRoute
 }
 
 class ReactWorld {
@@ -21,12 +21,15 @@ class ReactWorld {
       panels: new Map(),
       routes: new Map()
     }
-    this._runtimeStore = createObservableStore({
-      route: '/welcome',
-      panels: [],
-      visiblePanels: {},
-      discoveredModules: [],
-      projectConfig: null
+    this._runtimeStore = createStore({
+      name: 'reactRuntimeStore',
+      defaultValue: {
+        route: '/welcome',
+        panels: [],
+        visiblePanels: {},
+        discoveredModules: [],
+        projectConfig: null
+      }
     })
   }
 
@@ -40,8 +43,7 @@ class ReactWorld {
       }
 
       registerStore('reactSignal', createSignalStore)
-      registerStore('reactRoute', () => createRouteStore(getInitialRoute()))
-      registerStore('reactLifecycle', createLifecycleStore)
+      registerStore('reactRoute', () => createRouteStore(getInitialRoute(projectConfig)))
 
       const platformConfigStore = container.resolve('platformConfig')
       if (typeof platformConfigStore.setConfig === 'function') {
@@ -56,8 +58,8 @@ class ReactWorld {
       const panelNames = [...this._runtimeRegistry.panels.keys()]
       const visiblePanels = Object.fromEntries(panelNames.map((name) => [name, true]))
 
-      this._runtimeStore.setState({
-        route: getInitialRoute(),
+      this._runtimeStore.set({
+        route: getInitialRoute(projectConfig),
         panels: panelNames,
         visiblePanels,
         discoveredModules,
@@ -67,17 +69,13 @@ class ReactWorld {
       const routeStore = this.routeStore()
       routeStore.syncFromLocation()
       this._unsubscribeRoute = routeStore.subscribe(() => {
-        this._runtimeStore.patch({
-          route: routeStore.getSnapshot().path
-        })
+        this._runtimeStore.patch({ route: routeStore.getSnapshot().path })
       })
 
       if (typeof window !== 'undefined') {
         this._handleHashChange = () => routeStore.syncFromLocation()
         window.addEventListener('hashchange', this._handleHashChange)
       }
-
-      this.lifecycleStore().record('runtime:ready')
       this.started = true
     })()
 
@@ -93,19 +91,23 @@ class ReactWorld {
   }
 
   getSnapshot() {
-    return this._runtimeStore.getState()
+    return this._runtimeStore.getSnapshot()
   }
 
   routeStore() {
     return container.resolve('reactRoute')
   }
 
-  signalStore() {
-    return container.resolve('reactSignal')
+  store(name) {
+    return container.resolve(name)
   }
 
-  lifecycleStore() {
-    return container.resolve('reactLifecycle')
+  hasStore(name) {
+    return container.list().stores.includes(name)
+  }
+
+  signalStore() {
+    return container.resolve('reactSignal')
   }
 
   navigate(path) {
@@ -136,10 +138,6 @@ class ReactWorld {
 
   getRouteDescriptor(path) {
     return this._runtimeRegistry.routes.get(path) || null
-  }
-
-  recordLifecycle(event) {
-    this.lifecycleStore().record(event)
   }
 }
 

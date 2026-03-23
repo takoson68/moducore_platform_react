@@ -14,10 +14,10 @@ export function AppShell({ children, world }) {
         </button>
         <button
           type="button"
-          className={currentRoute === '/lifecycle' ? 'is-active' : ''}
-          onClick={() => world.navigate('/lifecycle')}
+          className={currentRoute === '/status' ? 'is-active' : ''}
+          onClick={() => world.navigate('/status')}
         >
-          Lifecycle 診斷
+          Status Page
         </button>
       </aside>
 

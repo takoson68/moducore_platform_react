@@ -1,29 +1,37 @@
-import { createObservableStore } from '../runtime/createObservableStore.js'
+import { createStore } from '@/core'
 
 export function createSignalStore() {
-  const store = createObservableStore({
-    count: 0,
-    message: 'React 驗證 world 已啟動'
+  const store = createStore({
+    name: 'reactSignalStore',
+    defaultValue: {
+      count: 0,
+      message: 'React 驗證 world 已啟動'
+    }
   })
 
   return {
     getSnapshot() {
-      return store.getState()
+      return store.getSnapshot()
     },
 
     subscribe(listener) {
       return store.subscribe(listener)
     },
 
+    useStore(selector) {
+      return store.useStore(selector)
+    },
+
     increment() {
-      store.patch((state) => ({
-        count: state.count + 1,
-        message: `共享 signal 已更新 ${state.count + 1} 次`
-      }))
+      const snapshot = store.get()
+      store.set({
+        count: snapshot.count + 1,
+        message: `共享 signal 已更新 ${snapshot.count + 1} 次`
+      })
     },
 
     reset() {
-      store.setState({
+      store.set({
         count: 0,
         message: '共享 signal 已重置'
       })

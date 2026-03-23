@@ -208,10 +208,24 @@ React 在本平台中不是附加 runtime，
 - 模組註冊流程
 - project 入口與 registry 入口
 - shared core 與 project 層的邊界
+- 每個 module 自行承擔自己的 route 宣告責任
 
 也就是說：
 
 > 結構、責任、入口、命名，仍然跟平台規章走。
+
+#### 4.1.1 模組 routes.js 規則
+
+在 React-only 平台中，所有 module 仍必須維持與原平台一致的責任切分：
+
+- 每個 module 都必須有自己的 `routes.js`
+- 即使該 module 目前沒有額外頁面，也必須保留 `routes.js`
+- 若暫時沒有 route，則 `routes.js` 應明確輸出空陣列
+- `modules/index.js` 只負責收集與安裝 module
+- `modules/index.js` 不得直接取代各 module 宣告自己的 route
+
+此規則的目的不是增加檔案數量，
+而是維持模組責任一致、結構可預測、後續可擴充。
 
 #### 4.2 必須改用 React 思考邏輯的部分
 

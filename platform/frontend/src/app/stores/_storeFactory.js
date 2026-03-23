@@ -1,5 +1,6 @@
 //- src/app/stores/_storeFactory.js
 // React-only 平台的通用 store 建立工廠
+import { useSyncExternalStore } from 'react'
 
 function isPlainObject(val) {
   return Object.prototype.toString.call(val) === '[object Object]'
@@ -25,9 +26,14 @@ export function createStore({
   const isPrimitive = !isObj && !isArray
 
   let state = structuredClone(defaultValue)
+  const listeners = new Set()
 
   function writeState(value) {
     state = structuredClone(value)
+  }
+
+  function emit() {
+    listeners.forEach((listener) => listener())
   }
 
   const store = {
@@ -39,12 +45,30 @@ export function createStore({
       return state
     },
 
+    getSnapshot() {
+      return state
+    },
+
+    subscribe(listener) {
+      listeners.add(listener)
+      return () => listeners.delete(listener)
+    },
+
+    useStore(selector = (snapshot) => snapshot) {
+      return useSyncExternalStore(
+        (listener) => store.subscribe(listener),
+        () => selector(store.getSnapshot()),
+        () => selector(store.getSnapshot())
+      )
+    },
+
     set(value) {
       if (!isTypeMatch(value, defaultValue)) {
         throw new TypeError(`[${name}] set 型態錯誤：接收到 ${JSON.stringify(value)}`)
       }
 
       writeState(value)
+      emit()
 
       if (storageKey) {
         try {
@@ -56,8 +80,21 @@ export function createStore({
       }
     },
 
+    patch(partial) {
+      if (!isObj) {
+        throw new TypeError(`[${name}] patch 僅支援 object store`)
+      }
+
+      const nextState = typeof partial === 'function'
+        ? partial(structuredClone(state))
+        : { ...state, ...partial }
+
+      store.set(nextState)
+    },
+
     clear() {
       writeState(structuredClone(defaultValue))
+      emit()
       if (storageKey) localStorage.removeItem(storageKey)
     },
 

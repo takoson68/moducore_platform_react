@@ -8,9 +8,9 @@ _VibeCore/   RootIndex.md  build  moducore_platform
 
 platform/    frontend/    backend/   public/  assets/ docs/
 
-components/   router/    container/  stores/   _workspace/
+components/   router/    container/  stores/   _workspace/   platform-intro/
 
-projects/    project-a/   modules/   layout/    dineCore/ 
+projects/    project-a/   modules/   layout/    dineCore/   react-welcome/
 
 _proTemp/    project-b/   services/  ModuDesk /  flowCenter/ 
 

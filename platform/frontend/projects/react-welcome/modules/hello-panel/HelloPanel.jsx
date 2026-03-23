@@ -1,28 +1,26 @@
-import { useEffect } from 'react'
-
 export function HelloPanel({ world }) {
-  useEffect(() => {
-    world.recordLifecycle('module:mount:hello-panel')
-    return () => {
-      world.recordLifecycle('module:unmount:hello-panel')
-    }
-  }, [world])
+  const signalStore = world.store('welcomeSharedSignal')
+  const signal = signalStore.useStore()
 
   return (
     <article className="react-card">
       <p className="react-eyebrow">hello-panel</p>
       <h2>平台核心仍可被 React 接入</h2>
       <p className="react-copy">
-        這個模組只做兩件事：更新共享 signal，以及證明模組在 React runtime 下可以獨立掛載。
+        這個模組直接操作 `welcomeSharedSignal` store。若按鈕更新後其他區塊同步重渲染，就表示 `_storeFactory.js` 的訂閱能力有成功接上。
       </p>
+      <div className="react-signal-strip">
+        <span>Store Count：{signal.count}</span>
+        <span>{signal.message}</span>
+      </div>
       <div className="react-actions">
-        <button type="button" onClick={() => world.signalStore().increment()}>
+        <button type="button" onClick={() => signalStore.increment()}>
           +1 signal
         </button>
         <button
           type="button"
           className="react-actions__ghost"
-          onClick={() => world.signalStore().setMessage('訊號由 hello-panel 主動更新')}
+          onClick={() => signalStore.setMessage('訊號由 hello-panel 主動更新')}
         >
           改寫訊息
         </button>

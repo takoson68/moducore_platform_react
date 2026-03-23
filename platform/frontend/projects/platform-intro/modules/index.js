@@ -44,13 +44,7 @@ export async function installModules({ register }, { allowList = [] } = {}) {
     if (installedModules.has(name)) continue
 
     const setup = mod.setup || {}
-    const { stores, panels, routes } = setup
-
-    if (stores) {
-      for (const [key, factory] of Object.entries(stores)) {
-        register.store(key, factory)
-      }
-    }
+    const { panels, routes } = setup
 
     if (Array.isArray(panels)) {
       panels.forEach((panel) => register.panel(panel))
@@ -62,5 +56,4 @@ export async function installModules({ register }, { allowList = [] } = {}) {
 
     installedModules.add(name)
   }
-
 }

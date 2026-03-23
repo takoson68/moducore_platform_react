@@ -1,42 +1,49 @@
-import { createObservableStore } from '../runtime/createObservableStore.js'
+import { createStore } from '@/core'
 
-function normalizePath(path) {
-  if (!path || path === '/') return '/welcome'
+function normalizePath(path, fallbackPath = '/welcome') {
+  if (!path || path === '/') return fallbackPath
   return path.startsWith('/') ? path : `/${path}`
 }
 
 export function createRouteStore(initialPath = '/welcome') {
-  const store = createObservableStore({
-    path: normalizePath(initialPath)
+  const store = createStore({
+    name: 'reactRouteStore',
+    defaultValue: {
+      path: normalizePath(initialPath, initialPath)
+    }
   })
 
   return {
     getSnapshot() {
-      return store.getState()
+      return store.getSnapshot()
     },
 
     subscribe(listener) {
       return store.subscribe(listener)
     },
 
+    useStore(selector) {
+      return store.useStore(selector)
+    },
+
     navigate(path) {
-      const nextPath = normalizePath(path)
+      const nextPath = normalizePath(path, initialPath)
 
       if (typeof window !== 'undefined') {
-        const current = normalizePath(window.location.hash.replace(/^#/, '') || '/welcome')
+        const current = normalizePath(window.location.hash.replace(/^#/, '') || initialPath, initialPath)
         if (current !== nextPath) {
           window.location.hash = nextPath
           return
         }
       }
 
-      store.setState({ path: nextPath })
+      store.set({ path: nextPath })
     },
 
     syncFromLocation() {
       if (typeof window === 'undefined') return
-      const path = normalizePath(window.location.hash.replace(/^#/, '') || '/welcome')
-      store.setState({ path })
+      const path = normalizePath(window.location.hash.replace(/^#/, '') || initialPath, initialPath)
+      store.set({ path })
     }
   }
 }
