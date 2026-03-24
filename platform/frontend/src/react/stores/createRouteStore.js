@@ -5,6 +5,19 @@ function normalizePath(path, fallbackPath = '/welcome') {
   return path.startsWith('/') ? path : `/${path}`
 }
 
+function resolveBrowserPath(fallbackPath) {
+  if (typeof window === 'undefined') {
+    return normalizePath(fallbackPath, fallbackPath)
+  }
+
+  const hashPath = window.location.hash.replace(/^#/, '')
+  if (hashPath) {
+    return normalizePath(hashPath, fallbackPath)
+  }
+
+  return normalizePath(window.location.pathname, fallbackPath)
+}
+
 export function createRouteStore(initialPath = '/welcome') {
   const store = createStore({
     name: 'reactRouteStore',
@@ -30,10 +43,9 @@ export function createRouteStore(initialPath = '/welcome') {
       const nextPath = normalizePath(path, initialPath)
 
       if (typeof window !== 'undefined') {
-        const current = normalizePath(window.location.hash.replace(/^#/, '') || initialPath, initialPath)
+        const current = resolveBrowserPath(initialPath)
         if (current !== nextPath) {
-          window.location.hash = nextPath
-          return
+          window.history.pushState({}, '', nextPath)
         }
       }
 
@@ -42,7 +54,13 @@ export function createRouteStore(initialPath = '/welcome') {
 
     syncFromLocation() {
       if (typeof window === 'undefined') return
-      const path = normalizePath(window.location.hash.replace(/^#/, '') || initialPath, initialPath)
+
+      const path = resolveBrowserPath(initialPath)
+
+      if (window.location.hash) {
+        window.history.replaceState({}, '', path)
+      }
+
       store.set({ path })
     }
   }

@@ -1,14 +1,18 @@
-import { StatusPanel } from './StatusPanel.jsx'
+import { StatusPanel } from './components/StatusPanel.jsx'
 import { routes } from './routes.js'
 
 export default {
   name: 'status-panel',
-  routes,
-  panels: [
-    {
-      name: 'status-panel',
-      title: 'Status Panel',
-      Component: StatusPanel
-    }
-  ]
+  setup: {
+    routes,
+    // 提供跨模組能力
+    panels: [
+      {
+        name: 'status-panel',
+        title: 'Status Panel',
+        targets: ['hello-welcome'],
+        Component: StatusPanel
+      }
+    ]
+  }
 }

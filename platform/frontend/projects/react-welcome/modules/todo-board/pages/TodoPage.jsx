@@ -83,7 +83,7 @@ function TodoInspector({ state }) {
   )
 }
 
-export function TodoPage({ world }) {
+export default function TodoPage({ world }) {
   const todoStore = world.store('todoBoard')
   const todoState = todoStore.useStore()
 

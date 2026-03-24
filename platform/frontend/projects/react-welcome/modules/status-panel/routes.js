@@ -1,9 +1,17 @@
-import { StatusPage } from './pages/StatusPage.jsx'
-
 export const routes = [
   {
     path: '/status',
     page: 'status',
-    Component: StatusPage
+    component: () => import('./pages/StatusPage.jsx'),
+    meta: {
+      nav: {
+        label: '狀態頁',
+        order: 10
+      },
+      access: {
+        public: true,
+        auth: false
+      }
+    }
   }
 ]

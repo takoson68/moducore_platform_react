@@ -1,195 +1,187 @@
 # ModuCore Platform
 
-Frontend React-first architecture and module contract are documented in [platform/frontend/docs/react-first-architecture.md](platform/frontend/docs/react-first-architecture.md).
+ModuCore Platform 是一個以「平台 > 專案 > 模組」為核心結構的前後端整合工程。
+目前前端主路徑採用 React-first，並保留原本 world / container / module registry 的組裝哲學。
 
-**ModuCore Platform** 是一套以 **前端架構治理** 為核心的工作平台導向系統實驗專案，  
-專為「需要反覆產出同類型前端、且長期維護成本高」的中大型 SaaS / 企業前端團隊而設計。
+## 專案定位
 
-平台以「模組」作為最小組裝單位，落實低耦合與可替換性，  
-並透過 **專案運行規則與生命週期定義**，把模組、版型與設定統一納入平台控管，  
-讓專案能在既定規範下被快速組裝、由系統層級規則判定（非人為約定）並可重置。
+這個專案的重點不是單一畫面框架，而是：
 
-ModuCore 的目標不是做一個網站，而是提供一個  
-**可承載多個專案實例（Project）** 的工作平台。  
-任何時間點系統只會存在一個可判定的專案狀態，  
-配合可預期的 boot 流程，降低重複開發成本、控制長期維護風險，並提高可擴展性。
+- 平台層提供基礎能力與啟動機制
+- 專案層決定目前世界的配置與外框
+- 模組層承接實際業務功能
 
----
+React 在這裡主要負責渲染層，並不推翻原本的平台結構。
 
-## 🎯 平台定位
+## 平台 > 專案 > 模組
 
-ModuCore 是工作平台；  
-Project 是專案實例；  
-Module 是功能構成單位；  
-Container 是統一的依賴注入與能力存取入口，用來避免模組亂耦合。
+整體分層如下：
 
----
+- `platform`
+  - 提供共用基礎能力、啟動流程與底層規則
+- `project`
+  - 決定目前啟動哪個專案、使用哪些模組、採用什麼 layout
+- `module`
+  - 各自管理自己的 `store.js`、`routes.js`、`service.js`、`api/`、`pages/`、`components/`、`index.js`
 
-## 🧠 世界模型
+這種結構可以讓：
 
-平台設計以 **專案運行規則與生命週期定義** 為核心，  
-此模型決定平台運行時的邊界、**系統層級規則判定（非人為約定）** 與生命週期結構。
+- 專案切換時不需要推翻整個平台
+- 模組可以作為完整個體獨立維護
+- 畫面框架從 Vue 過渡到 React 時，仍能保留原本的組裝邏輯
 
-平台文件負責說明與實作對齊，  
-實際規則判定以此模型的主鏈為準。
+## World / Container / Module Setup
 
----
+`world` 是註冊與解析的容器，不是單純的全域變數集合。
 
-## 🌍 世界（World）與專案（Project）
+在這套結構裡：
 
-- 每個 Project 對應一個專案實例
-- 專案以 `tenant_id` 作為唯一識別
-- 任一時間只允許存在單一專案實例
-- 專案切換等同於現有專案狀態的重置或替換
+- module 透過 `index.js` 將自己的能力註冊進 world
+- world 負責解析已註冊的 store、route、panel 與其他能力
+- container 承接實際的註冊與 resolve 機制
 
-**專案層級規則與模組可用性控管**負責定義：
+`module/index.js` 的 `setup` 是模組對外公開能力的入口，常見包含：
 
-- 本專案允許啟用的模組集合
-- 專案層級設定（config）
-- 進入專案後的可用行為邊界
+- `stores`
+- `routes`
+- `panels`
 
-這裡的「World」不是資料夾概念，  
-而是平台啟動後形成的 **唯一有效且可運作的專案狀態**。
+原則上：
 
----
+- 模組內部可以直接引用自己模組的檔案
+- 跨模組不可直接引用別的模組內部檔案
+- 跨模組必須透過 world 取得已註冊能力
 
-## 🔥 World：世界能力的唯一對外入口
+## Store 響應與 React-first
 
-World 是平台對外的唯一入口，負責承接專案啟動後可用的能力存取。  
-模組與頁面應透過 World 取得 store、service 與執行上下文，  
-確保對外使用介面一致、避免跨層耦合。
+目前前端的 React 響應能力，已包裝進平台自己的 Store 工廠中。
 
-## 🔧 Container：World 內部的能力註冊與解析核心
+這代表：
 
-Container 是 World 內部使用的依賴注入與能力註冊核心，  
-負責承接模組註冊並提供能力解析。其職責包含：
+- React 的響應訂閱能力由平台內建提供
+- 模組在 `store.js` 中直接使用平台提供的 store factory 即可
+- Store 會同時承接狀態、actions、subscribe 與 React 響應介面
+- 不依賴 Redux、Zustand、Pinia 或其他第三方狀態管理框架
 
-- 能力的註冊與存取
-- 隔離模組之間的直接依賴
-- 提供專案中可被使用的能力實體
+因此，模組層只需要專注在自己的狀態結構與業務邏輯，不需要再額外引入第三方狀態管理方案。
 
-Container **不直接負責**：
+最小示範：
 
-- 專案流程判定
-- 權限判斷
-- 專案生命週期決策
+```js
+// modules/counter/store.js
+import { createStore } from '@/core'
 
-專案運行規則與生命週期由平台與 World 主導，Container 作為其內部機制。
+export function createCounterStore() {
+  return createStore({
+    name: 'counterStore',
+    defaultValue: {
+      count: 0
+    },
+    actions: {
+      increment(store) {
+        const snapshot = store.get()
+        store.set({
+          ...snapshot,
+          count: snapshot.count + 1
+        })
+      }
+    }
+  })
+}
 
----
-
-## 🧱 模組（Module）：以 setup 描述為核心的能力註冊單位
-
-模組是專案功能的實作單位，但其存在並非預設成立，  
-而是必須在 `modules/index.js` 的安裝流程中，  
-通過專案可見性與 allowList 過濾後，完成能力註冊才視為有效。
-
-目前模組採用 `setup` 物件描述能力，  
-平台會依描述內容註冊對應能力。
-
-在 `setup` 中，模組可選擇性提供：
-
-- UI（頁面 / 元件 / slot）
-- Routes（含權限語意）
-- Store（透過 register.store 進入 container）
-- 其他模組能力描述（依平台擴充）
-
-未被安裝流程納入的模組，  
-即使存在於程式碼中，  
-亦不會進入專案執行範圍。
-
-
-### 模組存在判準
-
-> **模組是否有效，以「通過可見性裁決 + 被安裝流程納入」為判準。**
-
-- 未被安裝流程納入的模組，視為不生效
-- 模組可見性與權限判定在註冊前完成
-- Store 透過 `register.store` 進入 Container；Routes/UI 由對應註冊流程管理
-
----
-
-## 🧱 Store：狀態的權威來源
-
-Store 負責專案狀態管理，  
-且是影響專案未來行為的唯一權威來源。
-
-### 狀態邊界原則
-
-- 任何會影響專案未來行為的資料，必須進入 Store
-- 不影響未來行為的資料，不得作為系統判定依據
-
-### Store 的實作原則
-
-為確保狀態具備單一權威性與可預期行為，  
-本平台的 Store 不是單純的資料容器，  
-而是建立於「容器註冊機制」與「可控的狀態響應策略」之上。
-
-所有會影響專案未來行為的狀態，  
-必須透過容器註冊後由 Store 統一管理，  
-並以明確的存取與變更介面對外暴露，  
-避免狀態被隱性修改或在模組間流竄。
-
-### Store 類型
-
-#### 平台級 Store（Platform Stores）
-
-- 專案層級狀態
-- 由平台在 boot 階段建立與註冊
-- 範例：
-  - auth / token
-  - platformConfig
-  - lifecycle / session
-
-#### 模組私有 Store（Module Stores）
-
-- 僅服務模組內部狀態
-- 隨模組註冊與移除進行建立或清理
-- 不得被其他模組直接依賴
-
----
-
-## 🚧 Routing：專案存取邊界
-
-Routing Guard 作為使用者進入專案內容的最後防線，負責：
-
-- 驗證使用者是否可進入當前專案狀態
-- 阻擋未授權或不合法的存取行為
-
-Routing 不作為：
-
-- 模組存在判準
-- 能力註冊依據
-- 專案規則判定核心
-
-Routing 僅負責存取控制，不參與專案規則定義。
-
----
-
-## 🔁 前端與後端關係
-
-- 前端：負責專案運行規則落實、平台規則執行與模組組合
-- 後端：維持為薄後端，僅提供必要 API（登入、Session、基礎資料）
-
-後端不參與專案規則判定，  
-僅作為專案運作所需的最小事實來源。
-
----
-
-## 🧩 世界語意分層
-
-```txt
-┌──────────────────────────────┐
-│           Platform           │ 專案規則 / lifecycle / guard
-├──────────────────────────────┤
-│        World (Project)       │ tenant_id / config
-├──────────────────────────────┤
-│           Container          │ 統一的依賴注入與能力存取入口
-├──────────────────────────────┤
-│           Modules            │ UI / store / api
-├──────────────────────────────┤
-│        Backend (Thin)        │ auth / session / data
-└──────────────────────────────┘
+export const stores = {
+  counterStore: createCounterStore
+}
 ```
 
----
+```jsx
+// modules/counter/components/CounterPanel.jsx
+export function CounterPanel({ world }) {
+  const counterStore = world.store('counterStore')
+  const counter = counterStore.useStore()
+
+  return (
+    <section>
+      <p>Count: {counter.count}</p>
+      <button type="button" onClick={() => counterStore.increment()}>
+        Count +1
+      </button>
+    </section>
+  )
+}
+```
+
+上面這種寫法代表：
+
+- store 的 state 與 actions 由平台 store factory 建立
+- React 元件透過 `useStore()` 訂閱狀態
+- 點擊 `increment()` 後，React 畫面會自動響應更新
+- 整個流程不需要額外引入第三方狀態管理套件
+
+Store 使用原則：
+
+- 任何會影響專案後續行為的狀態，應進入 Store
+- 父子元件間的直接傳遞使用 `props`
+- 超出父子關係的資料傳遞，應使用 Store
+
+## Panels / Routes / Stores 的角色
+
+在模組 `setup` 中，這三者的角色不同：
+
+- `stores`
+  - 提供模組狀態能力
+- `routes`
+  - 提供模組頁面入口
+- `panels`
+  - 提供模組對外公開的跨模組 UI 能力
+
+### `panels`
+
+`panels` 不是單純匯出元件，而是讓其他模組、project layout 或 project-level page 能透過 world 取回並使用的 UI 區塊。
+
+適合用在：
+
+- 首頁卡片
+- dashboard 區塊
+- 可插拔的摘要元件
+
+使用規則：
+
+- 若寫 `panels`，必須加上註解：`// 提供跨模組能力`
+- 每個 panel 都必須標註 `targets`
+- 使用方不得直接把 `world.getPanels()` 全部畫出來，必須依 `targets` 過濾
+
+範例：
+
+```js
+export default {
+  name: 'notification',
+  setup: {
+    stores,
+    routes,
+    // 提供跨模組能力
+    panels: [
+      {
+        name: 'notification-bell',
+        targets: ['header-right'],
+        Component: NotificationBell
+      }
+    ]
+  }
+}
+```
+
+### `routes`
+
+`routes.js` 負責 route descriptor，並將 route metadata 留在 `routes.js` 中管理。
+
+目前規則：
+
+- 選單名稱使用 `meta.nav.label`
+- 選單排序使用 `meta.nav.order`
+- 若 route page 要延後載入，使用 `component: () => import(...)`
+
+### `stores`
+
+`store.js` 應承接實際 store 定義與聚合，不應只剩轉手或空殼。
+store 雖然可以註冊進 world，但其業務責任仍屬於原本的 module。

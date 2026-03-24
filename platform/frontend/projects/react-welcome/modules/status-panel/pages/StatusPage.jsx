@@ -1,6 +1,6 @@
-import { StatusPanel } from '../StatusPanel.jsx'
+import { StatusPanel } from '../components/StatusPanel.jsx'
 
-export function StatusPage({ world }) {
+export default function StatusPage({ world }) {
   return (
     <section className="react-page">
       <header className="react-page__header">

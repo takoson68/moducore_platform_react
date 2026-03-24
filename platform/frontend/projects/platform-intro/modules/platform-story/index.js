@@ -3,12 +3,16 @@ import { routes } from './routes.js'
 
 export default {
   name: 'platform-story',
-  routes,
-  panels: [
-    {
-      name: 'platform-story',
-      title: 'Platform Story',
-      Component: StoryPanel
-    }
-  ]
+  setup: {
+    routes,
+    // 提供跨模組能力
+    panels: [
+      {
+        name: 'platform-story',
+        title: 'Platform Story',
+        targets: ['platform-intro-home'],
+        Component: StoryPanel
+      }
+    ]
+  }
 }

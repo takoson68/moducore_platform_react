@@ -9,8 +9,13 @@ import { reactBoot } from './reactBoot.js'
 function getInitialRoute(projectConfig) {
   const fallbackRoute = projectConfig?.defaultRoute || '/welcome'
   if (typeof window === 'undefined') return fallbackRoute
-  const raw = window.location.hash.replace(/^#/, '')
-  return raw || fallbackRoute
+
+  const hashPath = window.location.hash.replace(/^#/, '')
+  if (hashPath) {
+    return hashPath || fallbackRoute
+  }
+
+  return window.location.pathname || fallbackRoute
 }
 
 class ReactWorld {
@@ -73,8 +78,8 @@ class ReactWorld {
       })
 
       if (typeof window !== 'undefined') {
-        this._handleHashChange = () => routeStore.syncFromLocation()
-        window.addEventListener('hashchange', this._handleHashChange)
+        this._handlePopState = () => routeStore.syncFromLocation()
+        window.addEventListener('popstate', this._handlePopState)
       }
       this.started = true
     })()
@@ -138,6 +143,10 @@ class ReactWorld {
 
   getRouteDescriptor(path) {
     return this._runtimeRegistry.routes.get(path) || null
+  }
+
+  getRoutes() {
+    return [...this._runtimeRegistry.routes.values()]
   }
 }
 

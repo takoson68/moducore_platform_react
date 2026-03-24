@@ -1,16 +1,20 @@
-import { TodoBoardPanel } from './TodoBoardPanel.jsx'
+import { TodoBoardPanel } from './components/TodoBoardPanel.jsx'
 import { routes } from './routes.js'
 import { stores } from './store.js'
 
 export default {
   name: 'todo-board',
-  stores,
-  routes,
-  panels: [
-    {
-      name: 'todo-board',
-      title: 'Todo Board',
-      Component: TodoBoardPanel
-    }
-  ]
+  setup: {
+    stores,
+    routes,
+    // 提供跨模組能力
+    panels: [
+      {
+        name: 'todo-board',
+        title: 'Todo Board',
+        targets: ['hello-welcome'],
+        Component: TodoBoardPanel
+      }
+    ]
+  }
 }
