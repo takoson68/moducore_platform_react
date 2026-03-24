@@ -1,3 +1,5 @@
+import { lazy } from 'react'
+
 export function createReactRegister(container, runtimeRegistry) {
   return {
     store(name, factory) {
@@ -6,7 +8,7 @@ export function createReactRegister(container, runtimeRegistry) {
 
     panel(descriptor) {
       if (!descriptor?.name) {
-        throw new Error('[ReactRegister] panel descriptor 缺少 name')
+        throw new Error('[ReactRegister] panel descriptor 蝻箏? name')
       }
 
       runtimeRegistry.panels.set(descriptor.name, descriptor)
@@ -14,10 +16,25 @@ export function createReactRegister(container, runtimeRegistry) {
 
     route(descriptor) {
       if (!descriptor?.path) {
-        throw new Error('[ReactRegister] route descriptor 缺少 path')
+        throw new Error('[ReactRegister] route descriptor 蝻箏? path')
       }
 
-      runtimeRegistry.routes.set(descriptor.path, descriptor)
+      const routeLoader = descriptor.component || descriptor.loadComponent
+      const normalizedDescriptor = routeLoader && !descriptor.Component
+        ? {
+            ...descriptor,
+            Component: lazy(async () => {
+              const imported = await routeLoader()
+              if (imported?.default) {
+                return imported
+              }
+
+              throw new Error(`[ReactRegister] route "${descriptor.path}" lazy component 缺少 default export`)
+            })
+          }
+        : descriptor
+
+      runtimeRegistry.routes.set(normalizedDescriptor.path, normalizedDescriptor)
     }
   }
 }

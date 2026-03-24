@@ -3,14 +3,12 @@ import { routes } from './routes.js'
 
 export default {
   name: 'platform-story',
-  setup: {
-    routes,
-    panels: [
-      {
-        name: 'platform-story',
-        title: 'Platform Story',
-        Component: StoryPanel
-      }
-    ]
-  }
+  routes,
+  panels: [
+    {
+      name: 'platform-story',
+      title: 'Platform Story',
+      Component: StoryPanel
+    }
+  ]
 }

@@ -36,3 +36,7 @@ export function createWelcomeSharedSignalStore() {
     }
   })
 }
+
+export const stores = {
+  welcomeSharedSignal: createWelcomeSharedSignalStore
+}

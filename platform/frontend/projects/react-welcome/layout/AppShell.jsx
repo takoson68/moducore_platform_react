@@ -19,6 +19,20 @@ export function AppShell({ children, world }) {
         >
           Status Page
         </button>
+        <button
+          type="button"
+          className={currentRoute === '/todos' ? 'is-active' : ''}
+          onClick={() => world.navigate('/todos')}
+        >
+          Todo List
+        </button>
+        <button
+          type="button"
+          className={currentRoute === '/form-draft' ? 'is-active' : ''}
+          onClick={() => world.navigate('/form-draft')}
+        >
+          Form Draft
+        </button>
       </aside>
 
       <main className="react-shell__main">{children}</main>

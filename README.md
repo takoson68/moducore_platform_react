@@ -1,5 +1,7 @@
 # ModuCore Platform
 
+Frontend React-first architecture and module contract are documented in [platform/frontend/docs/react-first-architecture.md](platform/frontend/docs/react-first-architecture.md).
+
 **ModuCore Platform** 是一套以 **前端架構治理** 為核心的工作平台導向系統實驗專案，  
 專為「需要反覆產出同類型前端、且長期維護成本高」的中大型 SaaS / 企業前端團隊而設計。
 

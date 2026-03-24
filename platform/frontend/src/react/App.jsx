@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { useObservableSnapshot } from './useObservableSnapshot.js'
 import { reactWorld } from './reactWorld.js'
 import { getProjectLayout, getProjectPages } from '@project/layout/index.js'
@@ -72,7 +73,9 @@ export default function App() {
 
   return (
     <Layout world={reactWorld}>
-      <PageComponent world={reactWorld} />
+      <Suspense fallback={<section className="react-page"><p className="react-copy">頁面載入中...</p></section>}>
+        <PageComponent world={reactWorld} />
+      </Suspense>
     </Layout>
   )
 }

@@ -4,7 +4,7 @@
 //---------------------------
 常用目錄單詞
 
-_VibeCore/   RootIndex.md  build  moducore_platform 
+_VibeCore/   RootIndex.md  build   vite.config.js/
 
 platform/    frontend/    backend/   public/  assets/ docs/
 
