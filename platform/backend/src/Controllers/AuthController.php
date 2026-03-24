@@ -91,14 +91,6 @@ final class AuthController
     private function resolveEmployeeRole(string $project, int $userId): ?string
     {
         $project = trim($project);
-        if ($project === 'project-b' || $project === 'project_b') {
-            $stmt = db()->prepare('SELECT role FROM project_b_employees WHERE user_id = ? LIMIT 1');
-            $stmt->execute([$userId]);
-            $row = $stmt->fetch();
-            if ($row && isset($row['role'])) {
-                return (string)$row['role'];
-            }
-        }
 
         if ($project === 'flowCenter' || $project === 'flow_center') {
             $profile = $this->resolveFlowCenterProfile($userId);
@@ -120,15 +112,6 @@ final class AuthController
     private function resolveEmployeeName(string $project, int $userId): ?string
     {
         $project = trim($project);
-        if ($project === 'project-b' || $project === 'project_b') {
-            $stmt = db()->prepare('SELECT name FROM project_b_employees WHERE user_id = ? LIMIT 1');
-            $stmt->execute([$userId]);
-            $row = $stmt->fetch();
-            if ($row && isset($row['name'])) {
-                return (string)$row['name'];
-            }
-        }
-
         if ($project === 'flowCenter' || $project === 'flow_center') {
             $profile = $this->resolveFlowCenterProfile($userId);
             if ($profile && isset($profile['display_name'])) {
